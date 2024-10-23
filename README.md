@@ -99,7 +99,7 @@ const uaDep = new Dependency(
   (c) => new UAParser(c.req.header("User-Agent") ?? ""),
   {
     scope: "request",
-  }
+  },
 );
 
 const app = new Hono()
