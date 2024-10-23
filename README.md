@@ -44,11 +44,11 @@ export class UserService {
 Next, you create a dependency for your service, specifying how it should be initialized. You can also choose whether it should be a singleton (default) or multi-instance (per request).
 
 ```ts
-import { Dependency } from "your-package-name";
+import { Dependency } from "hono-simple-di";
 import { UserService } from "./services/UserService";
 
 // Define the dependency for UserService
-const userDependency = new Dependency("userService", () => new UserService());
+const userServiceDep = new Dependency("userService", () => new UserService());
 ```
 
 #### 3. Inject dependency via middleware
@@ -57,11 +57,11 @@ Use the middleware method to inject the dependency into your Hono.js context. On
 
 ```ts
 import { Hono } from "hono";
-import { userDependency } from "./dependencies";
+import { userServiceDep } from "./dependencies";
 
 const app = new Hono()
   // Use the dependency as middleware
-  .use(userDependency.middleware())
+  .use(userServiceDep.middleware())
 
   .get("/", (c) => {
     // Retrieve the injected service
@@ -80,25 +80,51 @@ You can override the service instance at runtime using the injection method. Thi
 
 ```ts
 // Inject a custom service instance
-userDependency.injection({
+userServiceDep.injection({
   findOne(id: number) {
     return { id, name: "Injected User" };
   },
 });
 ```
 
+---
+
+### A service can also be something other than a class
+
+For example, using headers from `c.req.headers`.
+
+```ts
+const uaDep = new Dependency(
+  "ua",
+  (c) => new UAParser(c.req.header("User-Agent") ?? ""),
+  {
+    scope: "request",
+  }
+);
+
+const app = new Hono()
+  .use(uaDep.middleware())
+
+  .get("/", (c) => {
+    const ua = c.get("ua");
+    return c.text(`You are running on ${ua.getOS().name}!`);
+  });
+```
+
+---
+
 ### Using request scope service
 
 If you need a new instance of the service for each request (multi-instance), set the scope option to `request`.
 
 ```ts
-const requestIdDependency = new Dependency("requestId", (c) => Math.random(), {
+const requestIdDep = new Dependency("requestId", (c) => Math.random(), {
   scope: "request",
 });
 
 const app = new Hono()
   // Inject a unique ID for each request
-  .use(requestIdDependency.middleware())
+  .use(requestIdDep.middleware())
 
   .get("/id", (c) => {
     const requestId = c.get("requestId");
