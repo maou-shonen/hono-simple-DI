@@ -1,7 +1,7 @@
 {
   "name": "hono-simple-di",
   "version": "0.0.1",
-  "description": "Simple dependency injection optimized for hono.js.",
+  "description": "A small, type-safe DI library optimized for hono.js.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maou-shonen/hono-simple-DI.git"

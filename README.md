@@ -1,6 +1,15 @@
 # Hono simple DI
 
-This package is optimized for Hono.js and is not designed for large projects. If you require advanced DI features such as automatic circular injection, dynamic binding, and multi-binding, etc. you may need a dedicated DI library.
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![bundle][bundle-src]][bundle-href]
+[![Codecov][codecov-src]][codecov-href]
+[![License][license-src]][license-href]
+
+A small, type-safe DI library optimized for Hono.js.
+
+> [!IMPORTANT]
+> This package is optimized for [Hono.js](https://github.com/honojs/hono) and is not designed for large projects. If you require advanced DI features such as automatic circular injection, dynamic binding, and multi-binding, etc. you may need a dedicated DI library.
 
 ## Installation
 
@@ -83,7 +92,7 @@ userDependency.injection({
 If you need a new instance of the service for each request (multi-instance), set the scope option to `request`.
 
 ```ts
-const requestIdDependency = new Dependency("requestID", (c) => Math.random(), {
+const requestIdDependency = new Dependency("requestId", (c) => Math.random(), {
   scope: "request",
 });
 
@@ -92,8 +101,8 @@ const app = new Hono()
   .use(requestIdDependency.middleware())
 
   .get("/id", (c) => {
-    const requestID = c.get("requestID");
-    return c.text(`Request ID: ${requestID}`);
+    const requestId = c.get("requestId");
+    return c.text(`Request ID: ${requestId}`);
   });
 ```
 
@@ -141,3 +150,16 @@ interface Dependency<Service, ContextKeyDefault extends string> {
   }>
 }
 ```
+
+<!-- Refs -->
+
+[npm-version-src]: https://img.shields.io/npm/v/hono-simple-di
+[npm-version-href]: https://npmjs.com/package/hono-simple-di
+[npm-downloads-src]: https://img.shields.io/npm/dm/hono-simple-di
+[npm-downloads-href]: https://npmjs.com/package/hono-simple-di
+[codecov-src]: https://img.shields.io/codecov/c/gh/maou-shonen/hono-simple-di/main
+[codecov-href]: https://codecov.io/gh/maou-shonen/hono-simple-di
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/hono-simple-di
+[bundle-href]: https://bundlephobia.com/result?p=hono-simple-di
+[license-src]: https://img.shields.io/github/license/maou-shonen/hono-simple-di.svg
+[license-href]: https://github.com/maou-shonen/hono-simple-di/blob/main/LICENSE
