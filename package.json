@@ -1,0 +1,65 @@
+{
+  "name": "hono-simple-di",
+  "version": "0.0.1",
+  "description": "Simple dependency injection optimized for hono.js.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maou-shonen/hono-simple-DI.git"
+  },
+  "license": "MIT",
+  "author": "maou-shonen",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "module": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "typescript",
+    "hono",
+    "ioc",
+    "inversion-of-control",
+    "dependency-injection"
+  ],
+  "homepage": "https://github.com/maou-shonen/hono-simple-DI#readme",
+  "bugs": {
+    "url": "https://github.com/maou-shonen/hono-simple-DI/issues"
+  },
+  "packageManager": "pnpm@9.12.2",
+  "scripts": {
+    "prepare": "husky",
+    "build": "tsup-node",
+    "format": "prettier --write .",
+    "typecheck": "tsc",
+    "lint": "eslint --quiet .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "peerDependencies": {
+    "hono": ">=4.0.0",
+    "typescript": ">=5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.13.0",
+    "hono": "^4.6.6",
+    "husky": "^9.1.6",
+    "prettier": "^3.3.3",
+    "tsup": "^8.3.0",
+    "typescript-eslint": "^8.11.0",
+    "vitest": "^2.1.3"
+  }
+}
