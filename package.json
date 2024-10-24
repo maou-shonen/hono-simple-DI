@@ -1,6 +1,6 @@
 {
   "name": "hono-simple-di",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A small, type-safe DI library optimized for hono.js.",
   "repository": {
     "type": "git",
