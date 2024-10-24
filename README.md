@@ -48,7 +48,7 @@ import { Dependency } from "hono-simple-di";
 import { UserService } from "./services/UserService";
 
 // Define the dependency for UserService
-const userServiceDep = new Dependency("userService", () => new UserService());
+const userServiceDep = new Dependency(() => new UserService());
 ```
 
 #### 3. Inject dependency via middleware
@@ -61,7 +61,7 @@ import { userServiceDep } from "./dependencies";
 
 const app = new Hono()
   // Use the dependency as middleware
-  .use(userServiceDep.middleware())
+  .use(userServiceDep.middleware("userService"))
 
   .get("/", (c) => {
     // Retrieve the injected service
@@ -95,7 +95,6 @@ For example, using headers from `c.req.headers`.
 
 ```ts
 const uaDep = new Dependency(
-  "ua",
   (c) => new UAParser(c.req.header("User-Agent") ?? ""),
   {
     scope: "request",
@@ -103,7 +102,7 @@ const uaDep = new Dependency(
 );
 
 const app = new Hono()
-  .use(uaDep.middleware())
+  .use(uaDep.middleware("ua"))
 
   .get("/", (c) => {
     const ua = c.get("ua");
@@ -118,13 +117,13 @@ const app = new Hono()
 If you need a new instance of the service for each request (multi-instance), set the scope option to `request`.
 
 ```ts
-const requestIdDep = new Dependency("requestId", (c) => Math.random(), {
+const requestIdDep = new Dependency((c) => Math.random(), {
   scope: "request",
 });
 
 const app = new Hono()
   // Inject a unique ID for each request
-  .use(requestIdDep.middleware())
+  .use(requestIdDep.middleware("requestId"))
 
   .get("/id", (c) => {
     const requestId = c.get("requestId");
@@ -132,15 +131,22 @@ const app = new Hono()
   });
 ```
 
+---
+
+### Do not provide an initialization function
+
+```ts
+const userServiceDep = new Dependency<UserService | null>();
+
+```
+
 ## API
 
 ### `Dependency` Interface
 
 ```ts
-interface Dependency<Service, ContextKeyDefault extends string> {
+interface Dependency<Service> {
   constructor(
-    /** The key used to store the service in the context. */
-    private contextKey: ContextKeyDefault,
     /** A function to initialize the service. */
     private serviceInitializer: (c: Context) => MaybePromise<Service>,
     private opts?: {
@@ -167,11 +173,12 @@ interface Dependency<Service, ContextKeyDefault extends string> {
    * @param contextKey - Optionally override the key used to store the service in the context.
    * @returns MiddlewareHandler - A Hono.js middleware function.
    */
-  middleware<ContextKeyOverride extends string | undefined = undefined>(
-    contextKey?: ContextKeyOverride,
+  middleware<ContextKey extends string>(
+    /** The key used to store the service in the context. */
+    contextKey?: ContextKey,
   ): MiddlewareHandler<{
     Variables: {
-      [key in Default<ContextKeyOverride, ContextKeyDefault>]: Service
+      [key in ContextKey]: Service
     }
   }>
 }
