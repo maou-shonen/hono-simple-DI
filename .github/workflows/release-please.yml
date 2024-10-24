@@ -28,7 +28,10 @@ jobs:
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
         if: ${{ steps.release.outputs.release_created }}
+      - run: corepack enable
+        if: ${{ steps.release.outputs.release_created }}
       - run: pnpm install
+        if: ${{ steps.release.outputs.release_created }}
       - run: npm test
         if: ${{ steps.release.outputs.release_created }}
       - run: npm run build
