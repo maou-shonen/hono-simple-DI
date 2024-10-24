@@ -25,9 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
           registry-url: "https://registry.npmjs.org"
         if: ${{ steps.release.outputs.release_created }}
+      - run: pnpm install
       - run: npm test
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npm run build
         if: ${{ steps.release.outputs.release_created }}
       - run: npm publish
         env:
