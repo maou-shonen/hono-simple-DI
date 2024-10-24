@@ -12,14 +12,14 @@ describe("Dependency", () => {
   }
 
   it("create", () => {
-    const dep = new Dependency("key", () => null);
+    const dep = new Dependency(() => null);
     expect(dep).instanceOf(Dependency);
   });
 
   it("basic", async () => {
-    const dep = new Dependency("service", () => new TestService("foo"));
+    const dep = new Dependency(() => new TestService("foo"));
     const app = new Hono()
-      .use(dep.middleware())
+      .use(dep.middleware("service"))
       .get("/", (c) =>
         c.text(c.var.service.name, "service" in c.var ? 200 : 400),
       );
@@ -31,9 +31,9 @@ describe("Dependency", () => {
   });
 
   it("injection", async () => {
-    const dep = new Dependency("service", () => new TestService("foo"));
+    const dep = new Dependency(() => new TestService("foo"));
     const app = new Hono()
-      .use(dep.middleware())
+      .use(dep.middleware("service"))
       .get("/", (c) => c.text(c.var.service.name));
 
     dep.injection(new TestService("bar"));
@@ -51,11 +51,11 @@ describe("Dependency", () => {
       return new TestService("foo");
     };
 
-    const dep = new Dependency("service", () => createService(), {
+    const dep = new Dependency(() => createService(), {
       scope: "default",
     });
     const app = new Hono()
-      .use(dep.middleware())
+      .use(dep.middleware("service"))
       .get("/", (c) => c.text(c.var.service.name));
 
     const res1 = await app.request("/");
@@ -75,11 +75,11 @@ describe("Dependency", () => {
       return new TestService("foo");
     };
 
-    const dep = new Dependency("service", () => createService(), {
+    const dep = new Dependency(() => createService(), {
       scope: "request",
     });
     const app = new Hono()
-      .use(dep.middleware())
+      .use(dep.middleware("service"))
       .get("/", (c) => c.text(c.var.service.name));
 
     const res1 = await app.request("/");
