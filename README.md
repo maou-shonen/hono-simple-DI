@@ -136,8 +136,7 @@ const app = new Hono()
 ### Do not provide an initialization function
 
 ```ts
-const userServiceDep = new Dependency<UserService | null>();
-
+const userServiceDep = new Dependency<UserService | null>(() => null);
 ```
 
 ## API
@@ -167,6 +166,14 @@ interface Dependency<Service> {
    * @returns this - The instance of the dependency for chaining.
    */
   injection(service: Service): this
+
+  /**
+   * Clear injected service.
+   */
+  clearInjected(): this {
+    this.service = undefined;
+    return this;
+  }
 
   /**
    * Creates a middleware that injects the service into the context.
