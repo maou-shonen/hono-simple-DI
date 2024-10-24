@@ -91,4 +91,19 @@ describe("Dependency", () => {
 
     expect(createCount).toBe(2);
   });
+
+  it("clear injected service", async () => {
+    const dep = new Dependency(() => new TestService("foo"));
+    const app = new Hono()
+      .use(dep.middleware("service"))
+      .get("/", (c) => c.text(c.var.service.name));
+
+    dep.injection(new TestService("bar"));
+    dep.clearInjected();
+
+    const res = await app.request("/");
+    expect(res.status).toBe(200);
+    const data = await res.text();
+    expect(data).toBe("foo");
+  });
 });

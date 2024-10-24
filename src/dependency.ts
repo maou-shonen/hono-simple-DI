@@ -32,6 +32,14 @@ export class Dependency<Service> {
   }
 
   /**
+   * Clear injected service.
+   */
+  clearInjected(): this {
+    this.service = undefined;
+    return this;
+  }
+
+  /**
    * Creates a middleware that injects the service into the context.
    */
   middleware<ContextKey extends string>(
