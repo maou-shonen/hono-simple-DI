@@ -42,7 +42,7 @@
   "scripts": {
     "prepare": "husky",
     "build": "tsup-node",
-    "format": "prettier --write .",
+    "format": "prettier --write src",
     "typecheck": "tsc",
     "lint": "eslint --quiet .",
     "test": "vitest run",
@@ -58,6 +58,7 @@
     "eslint": "^9.13.0",
     "hono": "^4.6.6",
     "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "tsup": "^8.3.0",
     "typescript-eslint": "^8.11.0",
