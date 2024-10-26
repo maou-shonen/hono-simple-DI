@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/maou-shonen/hono-simple-DI/compare/v0.2.0...v0.2.1) (2024-10-26)
+
+
+### Bug Fixes
+
+* injected services should not be re-evaluated within the request scope ([#12](https://github.com/maou-shonen/hono-simple-DI/issues/12)) ([47703d3](https://github.com/maou-shonen/hono-simple-DI/commit/47703d37f008e8aaa0575e2f3a25254dfd132229))
+
 ## [0.2.0](https://github.com/maou-shonen/hono-simple-DI/compare/v0.1.0...v0.2.0) (2024-10-26)
 
 
