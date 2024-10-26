@@ -92,6 +92,27 @@ describe("Dependency", () => {
     expect(createCount).toBe(2);
   });
 
+  it("injected service will not be re-evaluated on request scope", async () => {
+    const dep = new Dependency(() => new TestService("foo"), {
+      scope: "request",
+    });
+    const app = new Hono()
+      .use(dep.middleware("service"))
+      .get("/", (c) => c.text(c.var.service.name));
+
+    dep.injection(new TestService("bar"));
+
+    const res1 = await app.request("/");
+    expect(res1.status).toBe(200);
+    const data1 = await res1.text();
+    expect(data1).toBe("bar");
+
+    const res2 = await app.request("/");
+    expect(res2.status).toBe(200);
+    const data2 = await res2.text();
+    expect(data2).toBe("bar");
+  });
+
   it("clear injected service", async () => {
     const dep = new Dependency(() => new TestService("foo"));
     const app = new Hono()
