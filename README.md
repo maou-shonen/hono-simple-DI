@@ -89,6 +89,16 @@ userServiceDep.injection({
 
 ---
 
+### Reference another dependency
+
+```ts
+const postServiceDep = new Dependency(
+  async (c) => new PostService(await userServiceDep.resolve(c)),
+);
+```
+
+---
+
 ### A service can also be something other than a class
 
 For example, using headers from `c.req.headers`.

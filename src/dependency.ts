@@ -21,7 +21,10 @@ export class Dependency<Service> {
     },
   ) {}
 
+  // service cache
   private service?: Service;
+  // used as a basis for caching when evaluating the request scope
+  private lastRequest?: Request;
 
   /**
    * Injects a service instance directly. Useful for overriding the default service.
@@ -40,6 +43,21 @@ export class Dependency<Service> {
   }
 
   /**
+   * Resolve service.
+   */
+  async resolve(c: Context): Promise<Service> {
+    // evaluate and clear the cache when handling the request scope
+    if (this.opts?.scope === "request" && this.lastRequest !== c.req.raw) {
+      this.service = undefined;
+      this.lastRequest = c.req.raw;
+    }
+
+    const service = (this.service ??= await this.serviceInitializer(c));
+
+    return service;
+  }
+
+  /**
    * Creates a middleware that injects the service into the context.
    */
   middleware<ContextKey extends string>(
@@ -51,10 +69,7 @@ export class Dependency<Service> {
     };
   }> {
     return async (c, next) => {
-      const service =
-        this.opts?.scope === "request"
-          ? await this.serviceInitializer(c)
-          : (this.service ??= await this.serviceInitializer(c));
+      const service = await this.resolve(c);
 
       c.set(contextKey, service);
 
