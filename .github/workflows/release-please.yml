@@ -22,13 +22,13 @@ jobs:
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.release_created }}
+      - run: corepack enable
+        if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
-        if: ${{ steps.release.outputs.release_created }}
-      - run: corepack enable
         if: ${{ steps.release.outputs.release_created }}
       - run: pnpm install
         if: ${{ steps.release.outputs.release_created }}
