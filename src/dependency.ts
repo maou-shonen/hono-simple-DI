@@ -21,8 +21,8 @@ export class Dependency<Service> {
     },
   ) {}
 
-  // service cache
-  private service?: Service;
+  private serviceInjected?: Service;
+  private serviceCached?: Service;
   // used as a basis for caching when evaluating the request scope
   private lastRequest?: Request;
 
@@ -30,7 +30,7 @@ export class Dependency<Service> {
    * Injects a service instance directly. Useful for overriding the default service.
    */
   injection(service: Service): this {
-    this.service = service;
+    this.serviceInjected = service;
     return this;
   }
 
@@ -38,7 +38,7 @@ export class Dependency<Service> {
    * Clear injected service.
    */
   clearInjected(): this {
-    this.service = undefined;
+    this.serviceInjected = undefined;
     return this;
   }
 
@@ -46,13 +46,17 @@ export class Dependency<Service> {
    * Resolve service.
    */
   async resolve(c: Context): Promise<Service> {
+    if (this.serviceInjected) {
+      return this.serviceInjected;
+    }
+
     // evaluate and clear the cache when handling the request scope
     if (this.opts?.scope === "request" && this.lastRequest !== c.req.raw) {
-      this.service = undefined;
+      this.serviceCached = undefined;
       this.lastRequest = c.req.raw;
     }
 
-    const service = (this.service ??= await this.serviceInitializer(c));
+    const service = (this.serviceCached ??= await this.serviceInitializer(c));
 
     return service;
   }
