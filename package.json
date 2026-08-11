@@ -38,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/maou-shonen/hono-simple-DI/issues"
   },
-  "packageManager": "pnpm@9.12.2",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "prepare": "husky",
     "build": "tsup-node",
